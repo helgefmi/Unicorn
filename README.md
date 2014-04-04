@@ -14,17 +14,17 @@ Example
 -------
 
 ```
-main_window = Unicorn.ListView:new(AlchemistControl, {
+lw = Unicorn.ListView:new(SomeControl, {
     width = 350,
     left = 970,
     top = 40,
 })
 
 for i = 1, 4 do
-    Alchemist.main_window:add_message("|cff0000Hello World")
-    Alchemist.main_window:add_message("|c00ff00This is line " .. i)
-    Alchemist.main_window:add_message("|c0000ffLorem ipsum sit amet etc. etc.")
-    Alchemist.main_window:add_message("")
+    lw:add_message("|cff0000Hello World")
+    lw:add_message("|c00ff00This is line " .. i)
+    lw:add_message("|c0000ffLorem ipsum sit amet etc. etc.")
+    lw:add_message("")
 end
 
 ```
