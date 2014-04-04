@@ -213,7 +213,7 @@ function ListView.new(control, settings)
 end
 
 function ListView:update()
-    if Unicorn.throttle(self, 0.5) then
+    if Unicorn.throttle(self, 0.1) then
         return
     end
 
