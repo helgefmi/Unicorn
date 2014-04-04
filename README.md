@@ -34,7 +34,7 @@ ListView
 
 Simple chatbox-like widget (without the input line.)
 
-[](http://i.imgur.com/I6hHytU.png)
+![Screenshot](http://i.imgur.com/I6hHytU.png)
 
 ### Scrolling
 
