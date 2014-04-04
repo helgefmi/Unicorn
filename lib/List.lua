@@ -216,7 +216,7 @@ function ListView:update()
         local message = self.lines[i + self.offset] -- self.offset = how much we've scrolled down
 
         -- Only show messages that will be displayed within the control.
-        if message ~= nil and i < self.num_visible_lines then
+        if message ~= nil and i <= self.num_visible_lines then
             line.text:SetText(message)
             line:SetHidden(false)
         else

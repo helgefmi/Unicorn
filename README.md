@@ -82,6 +82,10 @@ Adds a line.
 
 - More functionality for the handling of lines. We don't want people to manage `list_view.lines` manually, so we need to have some more functionality. E.g. `set_messages(messages)`, `insert_message(index, message)` etc.
 
+- Horizontal scrolling. Or line wrapping. Or both!
+
+- Timestamps? Or should that be handled by caller?
+
 
 Unicorn TODO
 ------------
@@ -90,6 +94,8 @@ Unicorn TODO
 
 - Implement TableView
 
-- Implement InputBox then InputOuputBox (which will consist of both InputBox and ListView). This can then be used to implement stuff like REPL's, custom chat boxes etc.
+- Implement InputBox then InputOuputBox (which will consist of both InputBox and ListView).
 
-- Also: Lots of stuff
+- When we have InputOutputBox (please dont call it that), implement a lua REPL! With colors and tab completes and all kinds of stuff!
+
+- Also: Lots of other stuff
