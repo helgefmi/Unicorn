@@ -63,7 +63,7 @@ Creates a new instance of ListView. This will be your handle for adding messages
 
 ### ListView:update()
 
-Renders the control. It's called automatically when any changes occur (adding messages, resizing etc.)
+Renders the control. It's called automatically every 0.1 second.
 
 ### ListView:clear()
 
@@ -74,8 +74,6 @@ Clears the lines. Makes the control empty.
 Adds a line.
 
 ### ListView TODO
-
-- Buffered update()
 
 - Padding
 
