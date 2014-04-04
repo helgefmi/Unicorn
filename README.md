@@ -1,0 +1,95 @@
+Unicorn
+=======
+
+An Elder Scrolls Online addon for addon developers!
+
+What does it do?
+----------------
+
+This repository will hopefully contain several reusable UI "widgets", that's easier to work on than the native ZO ones.
+
+The idea is to help separate your UI code from your logic (which is a common practice in most environments).
+
+Example
+-------
+
+```
+main_window = Unicorn.ListView:new(AlchemistControl, {
+    width = 350,
+    left = 970,
+    top = 40,
+})
+
+for i = 1, 4 do
+    Alchemist.main_window:add_message("|cff0000Hello World")
+    Alchemist.main_window:add_message("|c00ff00This is line " .. i)
+    Alchemist.main_window:add_message("|c0000ffLorem ipsum sit amet etc. etc.")
+    Alchemist.main_window:add_message("")
+end
+
+```
+
+ListView
+--------
+
+Simple chatbox-like widget (without the input line.)
+
+[](http://i.imgur.com/I6hHytU.png)
+
+### Scrolling
+
+- The scrollbar will hide/show automatically when it's (not) needed
+
+- It makes sure you can't scroll below or above the content.
+
+- The scrollbar resizes vertically, based on how much text is visible.
+
+### ListView.new(control, settings)
+
+Creates a new instance of ListView. This will be your handle for adding messages etc.
+
+- `control` = a random precreated control.
+
+- `settings`
+    - `slider_texture` (default "/esoui/art/miscellaneous/scrollbox_elevator.dds")
+    - `width` (default 400)
+    - `height` (default 400)
+    - `left` (default 100)
+    - `top` (default 100)
+    - `line_height` (default 20)
+
+### ListView:update()
+
+Renders the control. It's called automatically when any changes occur (adding messages, resizing etc.)
+
+### ListView:clear()
+
+Clears the lines. Makes the control empty.
+
+### ListView:add_message(message)
+
+Adds a line.
+
+### ListView TODO
+
+- Buffered update()
+
+- Padding
+
+- Make more stuff configurable by extending `settings`.
+
+- Make it possible to do stuff like `list_view:SetHidden(true)` instead of doing `list_view.control:SetHidden(true)`
+
+- More functionality for the handling of lines. We don't want people to manage `list_view.lines` manually, so we need to have some more functionality. E.g. `set_messages(messages)`, `insert_message(index, message)` etc.
+
+
+Unicorn TODO
+------------
+
+- Improve ListView
+
+- Implement TableView
+
+- Implement InputBox then InputOuputBox (which will consist of both InputBox and ListView). This can then be used to implement stuff like REPL's, custom chat boxes etc.
+
+- Also: Lots of stuff
