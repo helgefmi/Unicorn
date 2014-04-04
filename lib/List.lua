@@ -1,12 +1,14 @@
 local wm = WINDOW_MANAGER
 
 -- Utility
+
 local function clamp(val, min_, max_)
     val = math.max(val, min_)
     return math.min(val, max_)
 end
 
 -- Private API
+
 local function _set_line_counts(self)
     self.num_visible_lines = math.ceil(self.control:GetHeight() / self.line_height)
     self.num_visible_lines = math.min(self.num_visible_lines, #self.lines)
@@ -104,11 +106,13 @@ local function _initialize_listview(self, width, height, left, top)
     control.bd:SetAnchorFill(control)
 
     -- title
-    control.title = wm:CreateControl(name .. "_Title", control, CT_LABEL)
-    control.title:SetFont("ZoFontGame")
-    control.title:SetColor(255, 255, 255, 1)
-    control.title:SetText("Alchemist")
-    control.title:SetAnchor(TOPLEFT, control, TOPLEFT, 0, -24)
+    if self.title then
+        control.title = wm:CreateControl(name .. "_Title", control, CT_LABEL)
+        control.title:SetFont("ZoFontGame")
+        control.title:SetColor(255, 255, 255, 1)
+        control.title:SetText(self.title)
+        control.title:SetAnchor(TOPLEFT, control, TOPLEFT, 0, -24)
+    end
 
     -- close button
     control.close = wm:CreateControl(name .. "_Close", control, CT_BUTTON)
@@ -175,6 +179,7 @@ local function _initialize_listview(self, width, height, left, top)
 end
 
 -- ListView, public API
+
 local ListView = {}
 
 function ListView.new(control, settings)
@@ -187,14 +192,15 @@ function ListView.new(control, settings)
     local top = settings.top or 100
     
     self = {
-        control = control,
-        name = control:GetName(),
         line_height = settings.line_height or 20,
         slider_texture = settings.slider_texture or "/esoui/art/miscellaneous/scrollbox_elevator.dds",
+        title = settings.title, -- can be nil
+
+        control = control,
+        name = control:GetName(),
 
         offset = 0,
         lines = {},
-        
         currently_resizing = false,
     }
 
@@ -207,6 +213,10 @@ function ListView.new(control, settings)
 end
 
 function ListView:update()
+    if Unicorn.throttle(self, 0.5) then
+        return
+    end
+
     if self.currently_resizing then
         _on_resize(self)
     end
