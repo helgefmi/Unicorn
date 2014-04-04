@@ -6,9 +6,9 @@ An Elder Scrolls Online addon for addon developers!
 What does it do?
 ----------------
 
-This repository will hopefully contain several reusable UI "widgets", that's easier to work on than the native ZO ones.
+This repository will hopefully contain several reusable UI "widgets". Right now it only contains one.
 
-The idea is to help separate your UI code from your logic (which is a common practice in most environments).
+The idea is to make something more useful than the ZO controls, which are too "low level" to work with without cluttering your code and mixing UI code with your logic.
 
 Example
 -------
@@ -50,7 +50,7 @@ Simple widget for listing lines of text w/scrolling. Based off of techniques use
 
 Creates a new instance of ListView. This will be your handle for adding messages etc.
 
-- `control` = a random precreated control.
+- `control` = a random pre-created control.
 
 - `settings`
     - `slider_texture` (default "/esoui/art/miscellaneous/scrollbox_elevator.dds")
@@ -59,6 +59,7 @@ Creates a new instance of ListView. This will be your handle for adding messages
     - `left` (default 100)
     - `top` (default 100)
     - `line_height` (default 20)
+    - `title`
 
 ### ListView:update()
 
