@@ -44,6 +44,8 @@ Simple chatbox-like widget (without the input line.)
 
 - The scrollbar resizes vertically, based on how much text is visible.
 
+- It fully works with resizing the main control. The scrollbare will resize/hide/show correctly in all cases. Unless there's bugs. Then it's probably not in all cases.
+
 ### ListView.new(control, settings)
 
 Creates a new instance of ListView. This will be your handle for adding messages etc.
