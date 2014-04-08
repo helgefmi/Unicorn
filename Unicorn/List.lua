@@ -1,5 +1,9 @@
 local wm = WINDOW_MANAGER
 
+local TITLE_HEIGHT = 24
+local LINES_OFFSET = TITLE_HEIGHT
+local SLIDER_WIDTH = 22
+
 -- Utility
 
 local function clamp(val, min_, max_)
@@ -10,7 +14,7 @@ end
 -- Private API
 
 local function _set_line_counts(self)
-    self.num_visible_lines = math.ceil(self.control:GetHeight() / self.line_height)
+    self.num_visible_lines = math.floor((self.control:GetHeight() - LINES_OFFSET) / self.line_height)
     self.num_visible_lines = math.min(self.num_visible_lines, #self.lines)
     
     self.num_hidden_lines = math.max(0, #self.lines - self.num_visible_lines)
@@ -24,12 +28,7 @@ local function _create_listview_row(self, i)
     local name = control:GetName() .. "_Line" .. i
 
     local line = wm:CreateControl(name, control, CT_CONTROL)
-    line:SetDimensions(control:GetWidth(), self.line_height)
-
-    line.bd = wm:CreateControl(name .. "_Backdrop", line, CT_BACKDROP)
-    line.bd:SetCenterColor(0, 0, 0, 0)
-    line.bd:SetEdgeColor(0, 0, 0, 0)
-    line.bd:SetAnchorFill(line)
+    line:SetHeight(self.line_height)
 
     line.text = wm:CreateControl(name .. "_Text", line, CT_LABEL)
     line.text:SetFont("ZoFontGame")
@@ -46,11 +45,12 @@ local function _create_listview_lines_if_needed(self)
     -- Makes sure that the main control is filled up with line controls at all times.
     for i = 1, self.num_visible_lines do
         if control.lines[i] == nil then
-            control.lines[i] = _create_listview_row(self, i)
+            local line = _create_listview_row(self, i)
+            control.lines[i] = line
             if i == 1 then
-                control.lines[i]:SetAnchor(TOPLEFT, control, TOPLEFT, 0, 0)
+                line:SetAnchor(TOPLEFT, control, TOPLEFT, 0, LINES_OFFSET)
             else
-                control.lines[i]:SetAnchor(TOPLEFT, control.lines[i - 1], BOTTOMLEFT, 0, 0)
+                line:SetAnchor(TOPLEFT, control.lines[i - 1], BOTTOMLEFT, 0, 0)
             end
         end
     end
@@ -74,16 +74,22 @@ function _on_resize(self)
         -- If not, make sure the slider is showing.
         control.slider:SetHidden(false)
         self.control.slider:SetMinMax(0, self.num_hidden_lines)
-        control.slider:SetDimensions(30, control:GetHeight())
+        control.slider:SetHeight(control:GetHeight() - LINES_OFFSET)
 
         -- The more lines we can see, the bigger the slider should be.
         local tex = self.slider_texture
-        control.slider:SetThumbTexture(tex, tex, tex, 30, control:GetHeight() * viewable_lines_pct, 0, 0, 1, 1)
+        -- TODO: I have no idea why I need to do "+ 8" to get it to fit here.. GOD I hate low level UI API's.
+        control.slider:SetThumbTexture(tex, tex, tex, SLIDER_WIDTH + 8, control.slider:GetHeight() * viewable_lines_pct, 0, 0, 1, 1)
     end
     
     -- Update line widths in case we just resized self.control.
+    local line_width = control:GetWidth()
+    if not control.slider:IsControlHidden() then
+        line_width = line_width - control.slider:GetWidth()
+    end
+
     for _, line in pairs(control.lines) do
-        line:SetWidth(control:GetWidth())
+        line:SetWidth(line_width)
     end
 end
 
@@ -98,10 +104,11 @@ local function _initialize_listview(self, width, height, left, top)
     control:SetMovable(true)
     control:SetResizeHandleSize(MOUSE_CURSOR_RESIZE_NS)
     control:SetMouseEnabled(true)
+    control:SetClampedToScreen(true)
     
     -- control backdrop
     control.bd = wm:CreateControl(name .. "_Backdrop", control, CT_BACKDROP)
-    control.bd:SetCenterColor(0, 0, 0, 0.7)
+    control.bd:SetCenterColor(0, 0, 0, 0.6)
     control.bd:SetEdgeColor(0, 0, 0, 0)
     control.bd:SetAnchorFill(control)
 
@@ -110,32 +117,39 @@ local function _initialize_listview(self, width, height, left, top)
         control.title = wm:CreateControl(name .. "_Title", control, CT_LABEL)
         control.title:SetFont("ZoFontGame")
         control.title:SetColor(255, 255, 255, 1)
-        control.title:SetText(self.title)
-        control.title:SetAnchor(TOPLEFT, control, TOPLEFT, 0, -24)
+        control.title:SetText(" " .. self.title)
+        control.title:SetHeight(TITLE_HEIGHT)
+        control.title:SetAnchor(TOPLEFT, control, TOPLEFT, 0, 0)
+        control.title:SetAnchor(TOPRIGHT, control, TOPRIGHT, 0, 0)
+
+        -- title backdrop
+        control.title.bd = wm:CreateControl(name .. "_Title_Backdrop", control.title, CT_BACKDROP)
+        control.title.bd:SetCenterColor(0, 0, 0, 0.7)
+        control.title.bd:SetEdgeColor(0, 0, 0, 0)
+        control.title.bd:SetAnchorFill(control.title)
     end
 
     -- close button
     control.close = wm:CreateControl(name .. "_Close", control, CT_BUTTON)
-    control.close:SetDimensions(20, 20)
-    control.close:SetAnchor(BOTTOMLEFT, control, TOPRIGHT, -20, 0)
+    control.close:SetDimensions(20, TITLE_HEIGHT)
+    control.close:SetAnchor(TOPRIGHT, control, TOPRIGHT, 0, 0)
     control.close:SetFont("ZoFontGame")
     control.close:SetText("X")
 
     -- close backdrop
     control.close.bd = wm:CreateControl(name .. "_Close_Backdrop", control.close, CT_BACKDROP)
-    control.close.bd:SetCenterColor(1, 0, 0, 1)
+    control.close.bd:SetCenterColor(0, 0, 0, 1)
     control.close.bd:SetEdgeColor(0, 0, 0, 0)
     control.close.bd:SetAnchorFill(control.close)
 
     -- slider
     local tex = self.slider_texture
     control.slider = wm:CreateControl(name .. "_Slider", control, CT_SLIDER)
-    control.slider:SetDimensions(30, control:GetHeight())
+    control.slider:SetWidth(SLIDER_WIDTH)
     control.slider:SetMouseEnabled(true)
-    control.slider:SetThumbTexture(tex, tex, tex, 30, 50, 0, 0, 1, 1)
     control.slider:SetValue(0)
     control.slider:SetValueStep(1)
-    control.slider:SetAnchor(LEFT, control, RIGHT, -7, 0)
+    control.slider:SetAnchor(TOPRIGHT, control.close, BOTTOMRIGHT, 0, 0)
 
     -- lines
     control.lines = {}
@@ -158,7 +172,6 @@ local function _initialize_listview(self, width, height, left, top)
     -- event: slider
     control.slider:SetHandler("OnValueChanged", function(self, val, eventReason)
         me.offset = clamp(val, 0, me.num_hidden_lines)
-        --d("num_visible_lines=" .. me.num_visible_lines .. " num_hidden_lines=" .. me.num_hidden_lines .. " #lines=" .. #me.lines .. " me.offset=" .. me.offset)
         me:update()
     end)
     
@@ -213,7 +226,8 @@ function ListView.new(control, settings)
 end
 
 function ListView:update()
-    if Unicorn.throttle(self, 0.1) then
+    local throttle_time = self.currently_resizing and 0.02 or 0.1
+    if Unicorn.throttle(self, 0.05) then
         return
     end
 
@@ -241,7 +255,7 @@ function ListView:clear()
 end
 
 function ListView:add_message(message)
-    table.insert(self.lines, message)
+    table.insert(self.lines, " " .. message) -- poor man's padding. for now.
     _on_resize(self) -- maybe the function needs a better name :)
 end
 
