@@ -75,12 +75,6 @@ Adds a line.
 
 ### ListView TODO
 
-- Padding
-
-- Make more stuff configurable by extending `settings`.
-
-- Make it possible to do stuff like `list_view:SetHidden(true)` instead of doing `list_view.control:SetHidden(true)`
-
 - More functionality for the handling of lines. We don't want people to manage `list_view.lines` manually, so we need to have some more functionality. E.g. `set_messages(messages)`, `insert_message(index, message)` etc.
 
 - Horizontal scrolling. Or line wrapping. Or both!
@@ -91,12 +85,10 @@ Adds a line.
 Unicorn TODO
 ------------
 
-- Improve ListView
+- Actually make an effort. I have to say that UI programming is not my forte. I'd love it if someone would contribute; that would stir up interest, I think ;-).
 
-- Implement TableView
+- Make a logical hierarchy of "widgets"; e.g. start off with a window (title + scrolling + close button), then reuse it in other widgets.
 
-- Implement InputBox then InputOuputBox (which will consist of both InputBox and ListView).
-
-- When we have InputOutputBox (please dont call it that), implement a lua REPL! With colors and tab completes and all kinds of stuff!
-
-- Also: Lots of other stuff
+- Widgets that I want ASAP:
+    - Table
+    - Chat-type box (with possibilities for input)

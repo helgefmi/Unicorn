@@ -1,5 +1,5 @@
 Unicorn = {
-    version = 0.01,
+    version = 0.02,
     throttled = {},
 }
 
