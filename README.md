@@ -34,7 +34,7 @@ ListView
 
 Simple widget for listing lines of text w/scrolling. Based off of techniques used in [Zgoo](http://www.esoui.com/downloads/info24-Zgoo.html).
 
-![Screenshot](http://i.imgur.com/I6hHytU.png)
+![Screenshot](http://i.imgur.com/u7VoyAO.png)
 
 ### Scrolling
 
